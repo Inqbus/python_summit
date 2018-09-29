@@ -1,0 +1,20 @@
+<html>
+
+<head>
+</head>
+    
+<body>
+
+<H1>Bokeh Embedding in Flask</H1>
+
+
+{{ bokeh_script|safe }}
+
+<div class="flask_demo">
+ 
+{{ bokeh_div|safe }}
+
+</div>
+
+</body>
+</html>

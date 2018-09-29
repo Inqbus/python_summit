@@ -1,0 +1,19 @@
+<html>
+
+<head>
+</head>
+    
+<body>
+    {% block body %}
+    
+<div class="flask_demo">
+  <ul>
+      {% for name in names %}
+          <li>Hello<quad>{% name %}</li>
+      {% endfor %}
+  </ul>
+</div>
+
+    {% endblock %}
+</body>
+</html>
