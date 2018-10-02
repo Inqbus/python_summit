@@ -75,9 +75,10 @@ ticker1 = Select(value='AAPL', options=nix('GOOG', DEFAULT_TICKERS))
 ticker2 = Select(value='GOOG', options=nix('AAPL', DEFAULT_TICKERS))
 
 # set up plots
+data = dict(date=[], t1=[], t2=[], t1_returns=[], t2_returns=[])
 
-source = ColumnDataSource(data=dict(date=[], t1=[], t2=[], t1_returns=[], t2_returns=[]))
-source_static = ColumnDataSource(data=dict(date=[], t1=[], t2=[], t1_returns=[], t2_returns=[]))
+source = ColumnDataSource(data=data.copy())
+source_static = ColumnDataSource(data=data.copy())
 tools = 'pan,wheel_zoom,xbox_select,reset'
 
 corr = figure(plot_width=350, plot_height=350,

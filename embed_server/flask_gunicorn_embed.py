@@ -8,17 +8,10 @@ except ImportError:
 from bokeh.application import Application
 from bokeh.application.handlers import FunctionHandler
 from bokeh.embed import server_document
-from bokeh.io import curdoc
-from bokeh.layouts import row, widgetbox, column
-from bokeh.models import ColumnDataSource, Slider
-from bokeh.plotting import figure
 from bokeh.server.server import BaseServer
 from bokeh.server.tornado import BokehTornado
 from bokeh.server.util import bind_sockets
 from bokeh.themes import Theme
-
-# Numercal Python importieren
-import numpy as np
 
 # Tornado webserver
 from tornado.httpserver import HTTPServer
@@ -27,60 +20,16 @@ from tornado.ioloop import IOLoop
 # Flask Webframework
 from flask import Flask, render_template
 
-# Welcome message
-if __name__ == '__main__':
-    print('This script is intended to be run with gunicorn. e.g.')
-    print()
-    print('    gunicorn -w 4 flask_gunicorn_embed:app')
-    print()
-    print('will start the app on four processes')
-    import sys
-    sys.exit()
+# import graphic
+from slider import root
 
 # Flask starten
 app = Flask(__name__)
 
 # Bokeh Code der Applikation 
 def modify_doc(doc):
-
-    # Konstante für maximale X-Ausdehnung
-    N = 100
-    X_MAX = 4*np.pi
-    k = 1
-
-    # Definiere Initiale Daten
-    x = np.linspace(0, X_MAX, N)
-    y = np.sin(k*x)
-
-    # Definiere eine Datenquelle
-    source = ColumnDataSource(data=dict(x=x, y=y))
-
-    # Ein Plot-Objekt wird definiert
-    plot = figure()
-    # welches einen Linien-Plot beinhaltet 
-    plot.line('x', 'y', source=source)
-
-    # Ein Schieberegler wird definiert
-    freq = Slider(title="freq", value=1.0, start=1, end=105, step=0.1)
-
-    # Diese Funktion soll gerufen werden, wenn der Schieberegler sich ändert ..
-    def update_data(attrname, old, new):
-        k = freq.value
-        x = np.linspace(0, X_MAX, N)
-        y = np.sin(k*x)
-        source.data =dict(x=x, y=y)
-        
-    # .. was hier verdrahtet wird
-    freq.on_change('value', update_data)
-                    
-    # Hier wird eine Box im Browser erzeut, welche den Schieberegler enthält
-    inputs = widgetbox(freq)
-                    
-    # Diese Box wir im HTML-Document mit dem Plot in einer Zeile ausgerichtet
-    doc.add_root(row(inputs, plot, width=800))
+    doc.add_root( root() )
     
-#    doc.theme = Theme(filename="theme.yaml")
-
 # Die Bokeh Applikations-Instanz
 # can't use shortcuts here, since we are passing to low level BokehTornado
 bkapp = Application(FunctionHandler(modify_doc))

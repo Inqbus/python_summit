@@ -8,6 +8,8 @@ from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure
 from bokeh.models.widgets import Slider
 
+# Importiere Drosselung
+from ratelimit import rate_limited
 
 # Konstante für maximale X-Ausdehnung
 N = 100
@@ -30,23 +32,14 @@ plot.line('x', 'y', source=source)
 freq = Slider(title="freq", value=1.0, start=1, end=105, step=0.1)
 
 # Diese Funktion soll gerufen werden, wenn der Schieberegler sich ändert ..
+@rate_limited(10, mode='kill')
 def update_data(attrname, old, new):
     k = freq.value
 
-    # Wir haben Daten nur in einem gewissen Bereich der X-Achse
-    x_min = plot.x_range.start
-    x_max = plot.x_range.end - 1
-
-    # Erzeugen die neue Kurve
-    x = np.linspace(x_min, x_max, N)
+    x = np.linspace(plot.x_range.start, plot.x_range.end, N)
 
     y = np.sin(k*x)
     source.data =dict(x=x, y=y)
-
-    # und passen passen die Achsen den Daten an
-    plot.x_range.end = np.max(x)
-    plot.x_range.start = np.min(x)
-
 
 # .. was hier verdrahtet wird
 freq.on_change('value', update_data)
