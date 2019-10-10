@@ -10,7 +10,7 @@ from bokeh.models.widgets import Slider
 
 
 # Konstante für maximale X-Ausdehnung
-N = 100
+N = 200
 X_MAX = 4*np.pi
 k = 1
 
@@ -43,7 +43,7 @@ def update_data(attrname, old, new):
     y = np.sin(k*x)
 
     # simulate a shorter x-list
-    x = np.linspace(x_min, x_max, N-1)
+    x = np.linspace(x_min, x_max, N-10)
     
     source.data =dict(x=x, y=y)
     
