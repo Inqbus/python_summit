@@ -1,4 +1,6 @@
 # Numercal Python importieren
+import time
+
 import numpy as np
 
 # Bokeh Abhängigkeiten
@@ -16,6 +18,9 @@ N = 100
 X_MAX = 4*np.pi
 k = 1
 
+# logfile
+log = open('/tmp/bokeh.log', 'w')
+
 # Definiere Initiale Daten
 x = np.linspace(0, X_MAX, N)
 y = np.sin(k*x)
@@ -24,7 +29,7 @@ y = np.sin(k*x)
 source = ColumnDataSource(data=dict(x=x, y=y))
 
 # Ein Plot-Objekt wird definiert
-plot = figure(x_range=[0, 10], y_range=[0, 10])
+plot = figure()
 # welches einen Linien-Plot beinhaltet
 plot.line('x', 'y', source=source)
 
@@ -35,18 +40,17 @@ freq = Slider(title="freq", value=1.0, start=1, end=105, step=0.1)
 @rate_limited(10, mode='kill')
 def update_data(attrname, old, new):
     k = freq.value
-
-    x = np.linspace(plot.x_range.start, plot.x_range.end, N)
-
-    y = np.sin(k*x)
-    source.data =dict(x=x, y=y)
+    x = np.linspace(0, X_MAX, N)
+    y = np.sin(k * x)
+    source.data = dict(x=x, y=y)
+    # füge eine fiktive Berechnugns-Zeit von einer Sekunde ein
+    time.sleep(1)
+    log_line_template = "%s: attribute: %s, old: %s, new: %s\n"
+    log_line = log_line_template % (time.time(), attrname, old, new)
+    log.write(log_line)
 
 # .. was hier verdrahtet wird
 freq.on_change('value', update_data)
-
-# Wenn der Nutzer die X-Achse verändert sollen sich die Daten ändern
-plot.x_range.on_change('start', update_data)
-plot.x_range.on_change('end', update_data)
 
 # Hier wird eine Box im Browser erzeut, welche den Schieberegler enthält
 inputs = widgetbox(freq)

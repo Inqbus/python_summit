@@ -46,7 +46,7 @@ def update_data(attrname, old, new):
     y = np.sin(k*x)
     source.data =dict(x=x, y=y)
     # füge eine fiktive Berechnugns-Zeit von einer Sekunde ein
-#    sleep(1)
+    time.sleep(1)
     log_line_template = "%s: attribute: %s, old: %s, new: %s\n"
     log_line = log_line_template % (time.time(), attrname, old, new)
     log.write( log_line )
